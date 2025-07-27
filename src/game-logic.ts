@@ -1,4 +1,7 @@
-export const createGameState = () => ({
+import type { GameChoice } from "./types/GameChoice";
+import type { GameStateData } from "./types/GameStateData";
+
+export const createGameState = (): GameStateData => ({
     gameState: "idle",
     playerChoice: null,
     computerChoice: null,
@@ -9,13 +12,18 @@ export const createGameState = () => ({
     pulseDir: 1,
 });
 
-export const determineResult = (state) => {
+export const determineResult = (state: GameStateData): void => {
+    if (!state.playerChoice || !state.computerChoice) {
+        state.result = null;
+        return;
+    }
+
     if (state.playerChoice === state.computerChoice) {
         state.result = "draw";
         return;
     }
 
-    const wins = {
+    const wins: Record<GameChoice, GameChoice> = {
         rock: "scissors",
         paper: "rock",
         scissors: "paper",
@@ -25,7 +33,7 @@ export const determineResult = (state) => {
         wins[state.playerChoice] === state.computerChoice ? "win" : "lose";
 };
 
-export const computerMakeChoice = (state) => {
+export const computerMakeChoice = (state: GameStateData): void => {
     state.computerChoice =
         state.choices[Math.floor(Math.random() * state.choices.length)];
 };

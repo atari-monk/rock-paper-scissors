@@ -1,4 +1,11 @@
-export function renderGame(ctx, canvas, state) {
+import type { GameChoice } from "./types/GameChoice";
+import type { GameStateData } from "./types/GameStateData";
+
+export function renderGame(
+    ctx: CanvasRenderingContext2D,
+    canvas: HTMLCanvasElement,
+    state: GameStateData
+): void {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
@@ -15,7 +22,12 @@ export function renderGame(ctx, canvas, state) {
     }
 }
 
-function renderIdleState(ctx, centerX, centerY, state) {
+function renderIdleState(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    state: GameStateData
+): void {
     // Title
     ctx.font = "bold 30px Arial";
     ctx.textAlign = "center";
@@ -42,7 +54,12 @@ function renderIdleState(ctx, centerX, centerY, state) {
     ctx.restore();
 }
 
-function renderPlayerChooseState(ctx, centerX, centerY, state) {
+function renderPlayerChooseState(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    state: GameStateData
+): void {
     // Instruction
     ctx.font = "24px Arial";
     ctx.textAlign = "center";
@@ -59,9 +76,16 @@ function renderPlayerChooseState(ctx, centerX, centerY, state) {
     });
 }
 
-function renderResultState(ctx, centerX, centerY, state) {
+function renderResultState(
+    ctx: CanvasRenderingContext2D,
+    centerX: number,
+    centerY: number,
+    state: GameStateData
+): void {
     // Player choice
-    drawHandSymbol(ctx, state.playerChoice, centerX - 100, centerY, 50);
+    if (state.playerChoice) {
+        drawHandSymbol(ctx, state.playerChoice, centerX - 100, centerY, 50);
+    }
     ctx.font = "18px Arial";
     ctx.textAlign = "center";
     ctx.fillStyle = "#90e0ef";
@@ -73,7 +97,7 @@ function renderResultState(ctx, centerX, centerY, state) {
     ctx.fillText("VS", centerX, centerY + 30);
 
     // Computer choice
-    if (state.countdown > 0) {
+    if (state.countdown > 0 && state.computerChoice) {
         // Countdown animation
         const scale = 1 - state.countdown / 60;
         ctx.save();
@@ -81,7 +105,7 @@ function renderResultState(ctx, centerX, centerY, state) {
         ctx.scale(scale, scale);
         drawHandSymbol(ctx, state.computerChoice, 0, 0, 50);
         ctx.restore();
-    } else {
+    } else if (state.computerChoice) {
         // Show computer choice
         drawHandSymbol(ctx, state.computerChoice, centerX + 100, centerY, 50);
         ctx.fillText("Computer", centerX + 100, centerY + 80);
@@ -105,9 +129,11 @@ function renderResultState(ctx, centerX, centerY, state) {
                 break;
         }
 
-        ctx.font = "bold 30px Arial";
-        ctx.fillStyle = resultColor;
-        ctx.fillText(resultText, centerX, centerY - 50);
+        if (resultText && resultColor) {
+            ctx.font = "bold 30px Arial";
+            ctx.fillStyle = resultColor;
+            ctx.fillText(resultText, centerX, centerY - 50);
+        }
 
         // Play again button
         ctx.beginPath();
@@ -121,7 +147,15 @@ function renderResultState(ctx, centerX, centerY, state) {
     }
 }
 
-export function drawHandSymbol(ctx, type, x, y, size) {
+export function drawHandSymbol(
+    ctx: CanvasRenderingContext2D,
+    type: GameChoice | null,
+    x: number,
+    y: number,
+    size: number
+): void {
+    if (!type) return;
+
     ctx.save();
     ctx.translate(x, y);
 
