@@ -30,18 +30,34 @@ export const createRockPaperScissorsScene = (game: GameEngine): Scene => {
 
         onEnter(): void {
             state.gameState = "idle";
+
+            // Click handler
             const clickHandler = (e: MouseEvent) =>
                 inputHandler.handleClick(state, e);
             game.canvas.addEventListener("click", clickHandler);
-            // Store the reference for proper removal
             (this as any)._clickHandler = clickHandler;
+
+            // Touch handler
+            const touchHandler = (e: TouchEvent) =>
+                inputHandler.handleTouch(state, e);
+            game.canvas.addEventListener("touchstart", touchHandler);
+            (this as any)._touchHandler = touchHandler;
         },
 
         onExit(): void {
+            // Remove click handler
             if ((this as any)._clickHandler) {
                 game.canvas.removeEventListener(
                     "click",
                     (this as any)._clickHandler
+                );
+            }
+
+            // Remove touch handler
+            if ((this as any)._touchHandler) {
+                game.canvas.removeEventListener(
+                    "touchstart",
+                    (this as any)._touchHandler
                 );
             }
         },

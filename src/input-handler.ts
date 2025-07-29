@@ -10,10 +10,23 @@ export class InputHandler {
     }
 
     public handleClick(state: GameStateData, e: MouseEvent): void {
+        this.handleInput(state, e.clientX, e.clientY);
+    }
+
+    public handleTouch(state: GameStateData, e: TouchEvent): void {
+        const touch = e.touches[0]; // Get the first touch
+        this.handleInput(state, touch.clientX, touch.clientY);
+    }
+
+    private handleInput(
+        state: GameStateData,
+        clientX: number,
+        clientY: number
+    ): void {
         const canvas = this.game.canvas;
         const rect = canvas.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+        const x = clientX - rect.left;
+        const y = clientY - rect.top;
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
         const buttonRadius = 50;

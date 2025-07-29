@@ -20,7 +20,7 @@ export const createRenderer = () => {
     // Load images from public directory
     const loadSprite = (key: GameChoice) => {
         return new Promise<void>((resolve) => {
-            sprites[key].src = `/assets/${key}.png`; // Note: No '../public' needed in Vite
+            sprites[key].src = `/pages/rock-paper-scissors/assets/${key}.png`; // Note: No '../public' needed in Vite
             sprites[key].onload = () => {
                 spritesLoaded[key] = true;
                 resolve();
